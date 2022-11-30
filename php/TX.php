@@ -7,6 +7,10 @@
 
 //Hacemos un bucle y tomamos las variables de la URL recibida
 //Guarda el valor recibido en la variable key. Guarda cada carácter después del "&"
+$update_number = 0;
+$sent_temp = 0;
+$update_alarm = 0;
+
 foreach ($_REQUEST as $key => $value) {
 	//Ahora detectamos si recibimos el id, la contraseña, la unidad, o un valor para actualizar
 	if ($key == "id") {
@@ -28,6 +32,7 @@ foreach ($_REQUEST as $key => $value) {
 			$sent_alarm = $value;
 		}
 	}
+
 }
 
 include("database_connect.php"); 	
@@ -36,13 +41,11 @@ if (mysqli_connect_errno()) {
 	echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-//Now we update the values in database
-//If the received data is for SENT_NUMBER_1, we update that value
 if ($update_number == 1) {
-	mysqli_query($con, "UPDATE ESPtable2 SET SENT_TEMP = $sent_temp WHERE id=$unit AND PASSWORD=$pass");
+	mysqli_query($con, "UPDATE ESPtable2 SET SENT_TEMP = $sent_temp");;
 
 } else if ($update_number == 2) {
-	mysqli_query($con, "UPDATE ESPtable2 SET SENT_ALARM = $sent_alarm, WHERE id=$unit AND PASSWORD=$pass");;
+	mysqli_query($con, "UPDATE ESPtable2 SET SENT_ALARM = $sent_alarm");;
 }
 
 

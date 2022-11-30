@@ -1,7 +1,6 @@
 /*
   Estructura de la base de datos
   `id` int(5) NOT NULL,
-  `PASSWORD` int(5) NOT NULL,
   `RECEIVED_BOOL1` int(1) NOT NULL,
   `RECEIVED_BOOL2` int(1) NOT NULL,
   `RECEIVED_BOOL3` int(1) NOT NULL,
@@ -18,7 +17,6 @@
 
 dht DHT;
 #define DHT11_PIN 9
-
 #define ESP8266_RX 10
 #define ESP8266_TX 11
 
@@ -30,8 +28,8 @@ int LED5 = 6;
 int LED_ALARM = 7;
 
 /* datos de conexión */
-const char SSID_ESP[] = "MiFibra-4132"; 
-const char SSID_KEY[] = "vzP5anY5";
+const char SSID_ESP[] = "IZZI FERNANDEZ"; 
+const char SSID_KEY[] = "123498760";
 const char *host = "sysdot3000.000webhostapp.com/";
 String sysdot_id = "99999";
 String sysdot_password = "12345";

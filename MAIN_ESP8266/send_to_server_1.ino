@@ -1,8 +1,6 @@
 void send_to_server_1() {
   url = location_url;
   url += sysdot_id;
-  url += "&pw=";
-  url += sysdot_password;
   url += "&un=1";
   url += "&n1=";
   url += String(sent_temp);
@@ -68,7 +66,7 @@ void send_to_server_1() {
                             if (read_until_ESP(kw_n1, sizeof(kw_n1), 5000, 0)) {
                               if (read_until_ESP(kw_dh, sizeof(kw_dh), 5000, 1)) {
                                 for (int i = 1; i <= (sch_data_ESP[0] - sizeof(kw_dh) + 1); i++) { 
-                                  d9_from_ESP[i] = sch_data_ESP[i];
+                                  d6_from_ESP[i] = sch_data_ESP[i];
                                 }
                                 d6_from_ESP[0] = (sch_data_ESP[0] - sizeof(kw_dh) + 1);
                                 
@@ -128,8 +126,8 @@ void send_to_server_1() {
 
                                 Serial.print("RECEIVED_NUMBER_1 = "); 
                                 received_cont_temp = 0;
-                                for (int i = 1; i <= d9_from_ESP[0]; i++) {
-                                  received_cont_temp = received_cont_temp + ((d9_from_ESP[i] - 48) * multiplier[d9_from_ESP[0] - i]);
+                                for (int i = 1; i <= d6_from_ESP[0]; i++) {
+                                  received_cont_temp = received_cont_temp + ((d6_from_ESP[i] - 48) * multiplier[d6_from_ESP[0] - i]);
                                 }
                                 Serial.println(received_cont_temp);
                                 Serial.println("");
