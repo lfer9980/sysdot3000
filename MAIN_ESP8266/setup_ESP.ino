@@ -5,7 +5,7 @@ boolean setup_ESP()
   ESP8266.print("AT\r\n");
 
   /*  esta función read_until_... se utiliza para encontrar una palabra clave en la respuesta ESP - más sobre esto más adelante y en la propia función */
-  if (read_until_ESP(keyword_OK, sizeof(keyword_OK), 5000, 0))
+  if (read_until_ESP(kw_OK, sizeof(kw_OK), 5000, 0))
     Serial.println("ESP CHECK OK");
   else
     Serial.println("ESP CHECK FAILED");
@@ -16,7 +16,7 @@ boolean setup_ESP()
   ESP8266.print("AT+RST\r\n");
 
   /* buscar la palabra clave "Ready" - tarda unos segundos más en completarse */
-  if (read_until_ESP(keyword_OK, sizeof(keyword_OK), 5000, 0))
+  if (read_until_ESP(kw_OK, sizeof(kw_OK), 5000, 0))
     Serial.println("ESP RESET OK");
   else
     Serial.println("ESP RESET FAILED");
@@ -27,7 +27,7 @@ boolean setup_ESP()
   ESP8266.print(CWMODE);       // just send what is set in the constant
   ESP8266.print("\r\n");
 
-  if (read_until_ESP(keyword_OK, sizeof(keyword_OK), 5000, 0)) // go look for keyword "OK"
+  if (read_until_ESP(kw_OK, sizeof(kw_OK), 5000, 0)) // go look for keyword "OK"
     Serial.println("ESP CWMODE SET");
   else
     Serial.println("ESP CWMODE SET FAILED"); // probably going to fail, since a 'no change' is returned if already set - would be nice to check for two words
@@ -40,7 +40,7 @@ boolean setup_ESP()
   ESP8266.print(SSID_KEY); // form constant
   ESP8266.print("\"\r\n");
 
-  if (read_until_ESP(keyword_OK, sizeof(keyword_OK), 10000, 0)) // go look for keyword "OK"
+  if (read_until_ESP(kw_OK, sizeof(kw_OK), 10000, 0)) // go look for keyword "OK"
     Serial.println("ESP SSID SET OK");
   else
     Serial.println("ESP SSID SET FAILED");
@@ -51,20 +51,20 @@ boolean setup_ESP()
   ESP8266.print("AT+CIFSR\r\n"); // command to retrieve IP address from ESP
 
   /* busca el primer \r\n después de AT+CIFSR echo - nota el modo es '0', la dirección ip está justo después de esto */
-  if (read_until_ESP(keyword_rn, sizeof(keyword_rn), 10000, 0))
+  if (read_until_ESP(kw_rn, sizeof(kw_rn), 10000, 0))
   {
     /* busca el segundo \r\n, y almacena todo lo que recibe, mode='1' */
-    if (read_until_ESP(keyword_rn, sizeof(keyword_rn), 1000, 1))
+    if (read_until_ESP(kw_rn, sizeof(kw_rn), 1000, 1))
     {
       // store the ip adress in its variable, ip_address[]
       /* que i<=... va a necesitar algunas explicaciones, ver las siguientes líneas */
-      for (int i = 1; i <= (scratch_data_from_ESP[0] - sizeof(keyword_rn) + 1); i++)
-        ip_address[i] = scratch_data_from_ESP[i];
+      for (int i = 1; i <= (sch_data_ESP[0] - sizeof(kw_rn) + 1); i++)
+        ip_address[i] = sch_data_ESP[i];
       // fill up ip_address with the scratch data received
       // i=1 because i=0 is the length of the data found between the two keywords, BUT this includes the length of the second keyword, so i<= to the length minus
       // size of teh keyword, but remember, sizeof() will return one extra, which is going to be subtracted, so I just added it back in +1
 
-      ip_address[0] = (scratch_data_from_ESP[0] - sizeof(keyword_rn) + 1);
+      ip_address[0] = (sch_data_ESP[0] - sizeof(kw_rn) + 1);
       // store the length of ip_address in [0], same thing as before
       Serial.print("IP ADDRESS = "); // print it off to verify
 
@@ -81,7 +81,7 @@ boolean setup_ESP()
   ESP8266.print(CIPMUX);       // from constant
   ESP8266.print("\r\n");
 
-  if (read_until_ESP(keyword_OK, sizeof(keyword_OK), 5000, 0)) // go look for keyword "OK" or "no change
+  if (read_until_ESP(kw_OK, sizeof(kw_OK), 5000, 0)) // go look for keyword "OK" or "no change
     Serial.println("ESP CIPMUX SET");
   else
     Serial.println("ESP CIPMUX SET FAILED");

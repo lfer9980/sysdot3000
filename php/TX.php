@@ -21,11 +21,11 @@ foreach ($_REQUEST as $key => $value) {
 
 	if ($update_number == 1) {
 		if ($key == "n1") {
-			$sent_nr_1 = $value;
+			$sent_temp = $value;
 		}
-	} else if ($update_number == 5) {
+	} else if ($update_number == 2) {
 		if ($key == "b1") {
-			$sent_bool_1 = $value;
+			$sent_alarm = $value;
 		}
 	}
 }
@@ -39,10 +39,10 @@ if (mysqli_connect_errno()) {
 //Now we update the values in database
 //If the received data is for SENT_NUMBER_1, we update that value
 if ($update_number == 1) {
-	mysqli_query($con, "UPDATE ESPtable2 SET SENT_TEMP = $sent_nr_1 WHERE id=$unit AND PASSWORD=$pass");
+	mysqli_query($con, "UPDATE ESPtable2 SET SENT_TEMP = $sent_temp WHERE id=$unit AND PASSWORD=$pass");
 
-} else if ($update_number == 5) {
-	mysqli_query($con, "UPDATE ESPtable2 SET SENT_ALARM = $sent_bool_1, WHERE id=$unit AND PASSWORD=$pass");;
+} else if ($update_number == 2) {
+	mysqli_query($con, "UPDATE ESPtable2 SET SENT_ALARM = $sent_alarm, WHERE id=$unit AND PASSWORD=$pass");;
 }
 
 

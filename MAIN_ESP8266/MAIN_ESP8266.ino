@@ -18,9 +18,8 @@
 
 dht DHT;
 #define DHT11_PIN 9
-/* Conecta el pin TX del ESP a este pin RX del Arduino */
+
 #define ESP8266_RX 10
-/* Conecta el pin TX del Arduino al pin RX del ESP */
 #define ESP8266_TX 11
 
 int LED1 = 2;
@@ -29,15 +28,13 @@ int LED3 = 4;
 int LED4 = 5;
 int LED5 = 6;
 int LED_ALARM = 7;
-int pin_dht = A0;
 
 /* datos de conexión */
-
-const char SSID_ESP[] = "MiFibra-4132"; // Give EXACT name of your WIFI
-const char SSID_KEY[] = "vzP5anY5";     // Add the password of that WIFI connection
+const char SSID_ESP[] = "MiFibra-4132"; 
+const char SSID_KEY[] = "vzP5anY5";
 const char *host = "sysdot3000.000webhostapp.com/";
-String NOOBIX_id = "99999";
-String NOOBIX_password = "12345";
+String sysdot_id = "99999";
+String sysdot_password = "12345";
 String location_url = "/TX.php?id=";
 
 /* variables usadas en el codigo */
@@ -62,7 +59,7 @@ boolean connect_ESP();
 void connect_webhost();
 unsigned long timeout_start_val;
 
-char scratch_data_from_ESP[20]; // first byte is the length of bytes
+char sch_data_ESP[20];
 char payload[200];
 byte payload_size = 0, counter = 0;
 char ip_address[16];
@@ -74,8 +71,8 @@ float sent_temp = 0; /* lectura dht11 */
 /* Variable RECEIVED from the DATABASE */
 bool received_bool_1 = 0; /* switches digitales */
 bool received_bool_2 = 0;
-bool received_bool_4 = 0;
 bool received_bool_3 = 0;
+bool received_bool_4 = 0;
 bool received_bool_5 = 0;
 int received_cont_temp = 0; /* valor del control alarma */
 
@@ -86,25 +83,26 @@ char d2_from_ESP[2]; // For received_bool_2
 char d3_from_ESP[2]; // For received_bool_3
 char d4_from_ESP[2]; // For received_bool_4
 char d5_from_ESP[2]; // For received_bool_5
-char d9_from_ESP[6]; // For received_cont_temp
+char d6_from_ESP[6]; // For received_cont_temp
 
 /* DEFINE KEYWORDS HERE */
-const char keyword_OK[] = "OK";
-const char keyword_Ready[] = "Ready";
-const char keyword_no_change[] = "no change";
-const char keyword_blank[] = "#&";
-const char keyword_ip[] = "192.";
-const char keyword_rn[] = "\r\n";
-const char keyword_quote[] = "\"";
-const char keyword_carrot[] = ">";
-const char keyword_sendok[] = "SEND OK";
-const char keyword_linkdisc[] = "Unlink";
+const char kw_OK[] = "OK";
+const char kw_rn[] = "\r\n";
+const char kw_carrot[] = ">";
+const char kw_sendok[] = "SEND OK";
 
-const char keyword_b1[] = "b1";
-const char keyword_n1[] = "n1";
-const char keyword_doublehash[] = "##";
+
+const char kw_t1[] = "t1";
+const char kw_b1[] = "b1";
+const char kw_b2[] = "b2";
+const char kw_b3[] = "b3";
+const char kw_b4[] = "b4";
+const char kw_b5[] = "b5";
+const char kw_n1[] = "n1"; // received_cont_temp
+const char kw_dh[] = "##";
 
 SoftwareSerial ESP8266(ESP8266_RX, ESP8266_TX);
+
 
 void setup() {
   // Pin Modes for ESP TX/RX
@@ -123,13 +121,14 @@ void setup() {
   digitalWrite(LED4, LOW);
   digitalWrite(LED5, LOW);
 
-  ESP8266.begin(9600); // default baudrate for ESP
-  ESP8266.listen();    // not needed unless using other software serial instances
-  Serial.begin(9600);  // for status and debug
+  ESP8266.begin(9600);
+  ESP8266.listen();
+  Serial.begin(9600);
 
-  delay(2000); // delay before kicking things off
-  setup_ESP(); // go setup the ESP
+  delay(2000);
+  setup_ESP();
 }
+
 
 void loop() {
   /* leer temperatura del sensor */
@@ -143,8 +142,8 @@ void loop() {
   else {
     sent_alarm = 0;
   }
-
-  send_to_server_1();
+  
+  send_to_server_1(); 
   /* prendemos / apagamos de acuerdo a datos del servidor*/
   digitalWrite(LED1, received_bool_1);
   digitalWrite(LED2, received_bool_2);
@@ -154,7 +153,7 @@ void loop() {
   digitalWrite(LED_ALARM, sent_alarm);
 
   delay(500);
-  send_to_server_5();
+  send_to_server_2();
 
   digitalWrite(LED1, received_bool_1);
   digitalWrite(LED2, received_bool_2);

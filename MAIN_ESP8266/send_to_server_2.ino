@@ -3,9 +3,9 @@ void send_to_server_1() {
   url += sysdot_id;
   url += "&pw=";
   url += sysdot_password;
-  url += "&un=1";
-  url += "&n1=";
-  url += String(sent_temp);
+  url += "&un=2";
+  url += "&b1=";
+  url += String(sent_alarm);
 
   URL_withPacket = "";
   URL_withPacket = (String("GET ") + url + " HTTP/1.1\r\n" +
